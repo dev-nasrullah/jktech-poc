@@ -16,6 +16,9 @@ export class AuthRepository {
       where: {
         email,
       },
+      include: {
+        role: true,
+      },
     });
   }
 }
