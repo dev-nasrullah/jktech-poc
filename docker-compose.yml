@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: my_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  gateway:
+    build: ./gateway
+    container_name: api_service
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "postgres://root:root@postgres:5432/my_database"
+      UPLOAD_PATH: "/uploads"
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/uploads
+
+  microservice:
+    build: ./ingestion
+    container_name: micro_service
+    restart: always
+    depends_on:
+      - gateway
+    environment:
+      REST_SERVICE_URL: "http://gateway:3000"
+      UPLOAD_PATH: "/uploads"
+    volumes:
+      - uploads:/uploads
+
+volumes:
+  postgres_data:
+  uploads:
