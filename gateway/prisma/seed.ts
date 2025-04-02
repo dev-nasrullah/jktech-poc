@@ -1,6 +1,6 @@
-import { PERMISSIONS } from '@/common/constants/permission.const';
-import { ROLES } from '@/common/constants/role.const';
-import { ACCESS_TYPE } from '@/common/enum/access-type.enum';
+import { PERMISSIONS } from '../src/common/constants/permission.const';
+import { ROLES } from '../src/common/constants/role.const';
+import { ACCESS_TYPE } from '../src/common/enum/access-type.enum';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
@@ -22,32 +22,112 @@ async function main() {
     await prisma.rolePermission.createMany({
       data: [
         // Admin all permissions
-        { accessType: ACCESS_TYPE.READ, roleId: '1', permissionId: '1' },
-        { accessType: ACCESS_TYPE.WRITE, roleId: '1', permissionId: '1' },
-        { accessType: ACCESS_TYPE.UPDATE, roleId: '1', permissionId: '1' },
-        { accessType: ACCESS_TYPE.DELETE, roleId: '1', permissionId: '1' },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.WRITE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.UPDATE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.DELETE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[0].id,
+        },
 
-        { accessType: ACCESS_TYPE.READ, roleId: '1', permissionId: '2' },
-        { accessType: ACCESS_TYPE.WRITE, roleId: '1', permissionId: '2' },
-        { accessType: ACCESS_TYPE.UPDATE, roleId: '1', permissionId: '2' },
-        { accessType: ACCESS_TYPE.READ, roleId: '1', permissionId: '2' },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[1].id,
+        },
+        {
+          accessType: ACCESS_TYPE.WRITE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[1].id,
+        },
+        {
+          accessType: ACCESS_TYPE.UPDATE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[1].id,
+        },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[1].id,
+        },
 
-        { accessType: ACCESS_TYPE.READ, roleId: '1', permissionId: '3' },
-        { accessType: ACCESS_TYPE.WRITE, roleId: '1', permissionId: '3' },
-        { accessType: ACCESS_TYPE.UPDATE, roleId: '1', permissionId: '3' },
-        { accessType: ACCESS_TYPE.DELETE, roleId: '1', permissionId: '3' },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[2].id,
+        },
+        {
+          accessType: ACCESS_TYPE.WRITE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[2].id,
+        },
+        {
+          accessType: ACCESS_TYPE.UPDATE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[2].id,
+        },
+        {
+          accessType: ACCESS_TYPE.DELETE,
+          roleId: ROLES[0].id,
+          permissionId: PERMISSIONS[2].id,
+        },
 
         // Editor (read, write, update and delete) documents
-        { accessType: ACCESS_TYPE.READ, roleId: '2', permissionId: '1' },
-        { accessType: ACCESS_TYPE.WRITE, roleId: '2', permissionId: '1' },
-        { accessType: ACCESS_TYPE.UPDATE, roleId: '2', permissionId: '1' },
-        { accessType: ACCESS_TYPE.DELETE, roleId: '2', permissionId: '1' },
-        { accessType: ACCESS_TYPE.READ, roleId: '2', permissionId: '2' },
-        { accessType: ACCESS_TYPE.WRITE, roleId: '2', permissionId: '2' },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.WRITE,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.UPDATE,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.DELETE,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[1].id,
+        },
+        {
+          accessType: ACCESS_TYPE.WRITE,
+          roleId: ROLES[1].id,
+          permissionId: PERMISSIONS[1].id,
+        },
 
         // Viewer (read) documents
-        { accessType: ACCESS_TYPE.READ, roleId: '3', permissionId: '1' },
-        { accessType: ACCESS_TYPE.READ, roleId: '3', permissionId: '2' },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[2].id,
+          permissionId: PERMISSIONS[0].id,
+        },
+        {
+          accessType: ACCESS_TYPE.READ,
+          roleId: ROLES[2].id,
+          permissionId: PERMISSIONS[1].id,
+        },
       ],
     });
 
@@ -58,7 +138,7 @@ async function main() {
         firstName: 'Admin',
         lastName: 'User',
         password: await bcrypt.hash('password', 10),
-        roleId: '1',
+        roleId: ROLES[0].id,
       },
     });
   } catch (error) {
