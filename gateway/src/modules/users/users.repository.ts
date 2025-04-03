@@ -1,5 +1,6 @@
 import { PrismaService } from '@/database/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserRepository {
@@ -38,6 +39,19 @@ export class UserRepository {
   }) {
     return this.prisma.user.create({
       data,
+    });
+  }
+
+  getAllUsers({
+    select,
+    where,
+  }: {
+    select: Prisma.UserSelect;
+    where?: Prisma.UserWhereInput;
+  }) {
+    return this.prisma.user.findMany({
+      where,
+      select,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -18,5 +18,15 @@ export class UsersController {
   @Post('register')
   register(@Body() body: RegisterDto) {
     return this.usersService.register(body);
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Get all users',
+  })
+  @Get()
+  getUsers() {
+    return this.usersService.getUsers();
   }
 }

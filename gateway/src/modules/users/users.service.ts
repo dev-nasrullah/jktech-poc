@@ -30,4 +30,25 @@ export class UsersService extends BaseService {
 
     return this.response();
   }
+
+  async getUsers() {
+    const users = await this.usersRepository.getAllUsers({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return this.response(users);
+  }
 }
