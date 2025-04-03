@@ -14,6 +14,12 @@ enum AccessType {
   DELETE
 }
 
+enum IngestionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
 model Role {
   id   String @id @default(uuid())
   name String @unique
@@ -70,6 +76,7 @@ model User {
   deletedAt DateTime? @map("deleted_at")
 
   role Role @relation(fields: [roleId], references: [id])
+  ingestions Ingestion[]
 
   @@map("users")
 }
@@ -84,5 +91,23 @@ model Document {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
+  ingestions Ingestion[]
+
   @@map("documents")
+}
+
+model Ingestion {
+  id          String @id @default(uuid())
+  documentId  String @map("document_id")
+  userId      String @map("user_id")
+  status      IngestionStatus @default(PENDING)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  document Document @relation(fields: [documentId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@map("ingestions")
 }

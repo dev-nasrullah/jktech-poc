@@ -13,8 +13,11 @@ RUN yarn install --production
 # Copy the rest of the app files
 COPY . .
 
+# Generate prisma client
+RUN npx prisma generate
+
 # Expose port for the REST API
 EXPOSE 3000
 
 # Command to start the app
-CMD ["sh", "-c", "yarn prisma migrate deploy && yarn start"]
+CMD ["sh", "-c", "yarn prisma migrate deploy && yarn prisma db seed && yarn start"]

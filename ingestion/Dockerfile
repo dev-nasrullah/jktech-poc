@@ -13,8 +13,11 @@ RUN yarn install --production
 # Copy the rest of the app files
 COPY . .
 
+# Generate prisma client
+RUN npx prisma generate
+
 # Expose port for the microservice
-EXPOSE 4000
+EXPOSE 3001
 
 # Command to start the microservice
 CMD ["yarn", "start"]

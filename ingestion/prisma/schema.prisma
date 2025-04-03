@@ -6,3 +6,84 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model documents {
+  id         String       @id
+  name       String       @db.VarChar(255)
+  mime_type  String       @db.VarChar(255)
+  size       Float?
+  created_at DateTime     @default(now())
+  updated_at DateTime
+  deleted_at DateTime?
+  ingestions ingestions[]
+}
+
+model ingestions {
+  id          String          @id
+  document_id String
+  user_id     String
+  status      IngestionStatus @default(PENDING)
+  created_at  DateTime        @default(now())
+  updated_at  DateTime
+  deleted_at  DateTime?
+  documents   documents       @relation(fields: [document_id], references: [id])
+  users       users           @relation(fields: [user_id], references: [id])
+}
+
+model permissions {
+  id               String             @id
+  name             String             @unique
+  created_at       DateTime           @default(now())
+  updated_at       DateTime
+  deleted_at       DateTime?
+  role_permissions role_permissions[]
+}
+
+model role_permissions {
+  id           String      @id
+  roleId       String
+  permissionId String
+  accessType   AccessType
+  created_at   DateTime    @default(now())
+  updated_at   DateTime
+  deleted_at   DateTime?
+  permissions  permissions @relation(fields: [permissionId], references: [id])
+  roles        roles       @relation(fields: [roleId], references: [id])
+}
+
+model roles {
+  id               String             @id
+  name             String             @unique
+  created_at       DateTime           @default(now())
+  updated_at       DateTime
+  deleted_at       DateTime?
+  role_permissions role_permissions[]
+  users            users[]
+}
+
+model users {
+  id         String       @id
+  email      String       @unique
+  first_name String       @db.VarChar(255)
+  last_name  String?      @db.VarChar(255)
+  password   String?      @db.VarChar(255)
+  created_at DateTime     @default(now())
+  updated_at DateTime
+  deleted_at DateTime?
+  role_id    String
+  ingestions ingestions[]
+  roles      roles        @relation(fields: [role_id], references: [id])
+}
+
+enum AccessType {
+  READ
+  WRITE
+  UPDATE
+  DELETE
+}
+
+enum IngestionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}

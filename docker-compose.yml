@@ -35,6 +35,7 @@ services:
     depends_on:
       - gateway
     environment:
+      DATABASE_URL: "postgres://root:root@postgres:5432/my_database"
       REST_SERVICE_URL: "http://gateway:3000"
       UPLOAD_PATH: "/uploads"
     volumes:
