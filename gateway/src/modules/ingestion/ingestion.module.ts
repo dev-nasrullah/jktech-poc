@@ -4,17 +4,19 @@ import { IngestionController } from './ingestion.controller';
 import { PrismaModule } from '@/database/prisma.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { IngestionRepository } from './ingestion.repository';
+import { CaslModule } from '@/common/casl/casl.module';
 
 @Module({
   imports: [
     PrismaModule,
+    CaslModule,
     ClientsModule.register({
       clients: [
         {
           name: 'INGESTION_SERVICE',
           transport: Transport.TCP,
           options: {
-            host: 'localhost', //'microservice',
+            host: 'microservice',
             port: 3001,
           },
         },

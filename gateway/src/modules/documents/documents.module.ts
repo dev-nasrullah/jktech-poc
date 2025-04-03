@@ -3,9 +3,10 @@ import { DocumentsService } from './documents.service';
 import { DocumentsController } from './documents.controller';
 import { DocumentsRepository } from './documents.repository';
 import { PrismaModule } from '@/database/prisma.module';
+import { CaslModule } from '@/common/casl/casl.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, CaslModule],
   controllers: [DocumentsController],
   providers: [DocumentsService, DocumentsRepository],
 })

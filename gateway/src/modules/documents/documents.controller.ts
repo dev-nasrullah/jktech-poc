@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
@@ -18,6 +19,10 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentValidationPipe } from '@/common/pipe/document-validation.pipe';
+import { CaslGuard } from '@/common/guards/casl.guard';
+import { ACCESS_TYPE } from '@/common/enum/access-type.enum';
+import { Permissions } from '@/common/decorators/permissions.decorator';
+import { PERMISSION } from '@/common/enum/permission.enum';
 
 @Controller('documents')
 @ApiBearerAuth()
@@ -39,6 +44,8 @@ export class DocumentsController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(CaslGuard)
+  @Permissions([ACCESS_TYPE.WRITE, PERMISSION.Document])
   createDocument(
     @UploadedFile(DocumentValidationPipe) file: Express.Multer.File,
   ) {
@@ -50,6 +57,8 @@ export class DocumentsController {
     status: 200,
     description: 'Get all documents',
   })
+  @UseGuards(CaslGuard)
+  @Permissions([ACCESS_TYPE.READ, PERMISSION.Document])
   getAllDocument() {
     return this.documentsService.getAllDocument();
   }
@@ -59,6 +68,8 @@ export class DocumentsController {
     status: 200,
     description: 'Get document by id',
   })
+  @UseGuards(CaslGuard)
+  @Permissions([ACCESS_TYPE.READ, PERMISSION.Document])
   getDocumentById(@Param('id', ParseUUIDPipe) id: string) {
     return this.documentsService.getDocumentById(id);
   }
@@ -83,6 +94,8 @@ export class DocumentsController {
     description: 'Successfully update document',
   })
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(CaslGuard)
+  @Permissions([ACCESS_TYPE.UPDATE, PERMISSION.Document])
   updateDocument(
     @Param('id', ParseUUIDPipe) id: string,
     @UploadedFile(DocumentValidationPipe) file: Express.Multer.File,
@@ -95,6 +108,8 @@ export class DocumentsController {
     status: 200,
     description: 'Successfully delete document',
   })
+  @UseGuards(CaslGuard)
+  @Permissions([ACCESS_TYPE.DELETE, PERMISSION.Document])
   removeDocument(@Param('id', ParseUUIDPipe) id: string) {
     return this.documentsService.removeDocument(id);
   }
