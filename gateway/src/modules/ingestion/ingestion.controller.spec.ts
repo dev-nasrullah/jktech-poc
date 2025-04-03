@@ -4,6 +4,14 @@ import { IngestionService } from './ingestion.service';
 import { NotFoundException } from '@nestjs/common';
 import { CreateIngestionDto } from './dto/create-ingestion.dto';
 import { LocalContext } from '@/common/@types/local-context.type';
+import { CaslGuard } from '@/common/guards/casl.guard';
+import { Reflector } from '@nestjs/core';
+import { CaslAbilityFactory } from '@/common/factory/casl-ability.factory';
+import { PrismaService } from '@/database/prisma.service';
+
+jest.mock('@/common/guards/casl.guard');
+jest.mock('@/common/factory/casl-ability.factory');
+jest.mock('@/database/prisma.service');
 
 describe('IngestionController', () => {
   let controller: IngestionController;
@@ -13,6 +21,24 @@ describe('IngestionController', () => {
     createIngestion: jest.fn(),
   };
 
+  const mockCaslGuard = {
+    canActivate: jest.fn().mockReturnValue(true),
+  };
+
+  const mockReflector = {
+    get: jest.fn(),
+  };
+
+  const mockCaslAbilityFactory = {
+    createForUser: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    user: {
+      findUnique: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IngestionController],
@@ -20,6 +46,22 @@ describe('IngestionController', () => {
         {
           provide: IngestionService,
           useValue: mockIngestionService,
+        },
+        {
+          provide: CaslGuard,
+          useValue: mockCaslGuard,
+        },
+        {
+          provide: Reflector,
+          useValue: mockReflector,
+        },
+        {
+          provide: CaslAbilityFactory,
+          useValue: mockCaslAbilityFactory,
+        },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -46,6 +88,7 @@ describe('IngestionController', () => {
       firstName: 'Test',
       lastName: 'User',
       role: 'user',
+      userId: '123e4567-e89b-12d3-a456-426614174000',
     };
 
     const mockResponse = {

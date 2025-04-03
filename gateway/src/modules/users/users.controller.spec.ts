@@ -2,6 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { ROLES } from '@/common/constants/role.const';
+import { CaslGuard } from '@/common/guards/casl.guard';
+import { Reflector } from '@nestjs/core';
+import { CaslAbilityFactory } from '@/common/factory/casl-ability.factory';
+import { PrismaService } from '@/database/prisma.service';
+
+jest.mock('@/common/guards/casl.guard');
+jest.mock('@/common/factory/casl-ability.factory');
+jest.mock('@/database/prisma.service');
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -12,6 +20,24 @@ describe('UsersController', () => {
     getUsers: jest.fn(),
   };
 
+  const mockCaslGuard = {
+    canActivate: jest.fn().mockReturnValue(true),
+  };
+
+  const mockReflector = {
+    get: jest.fn(),
+  };
+
+  const mockCaslAbilityFactory = {
+    createForUser: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    user: {
+      findUnique: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
@@ -19,6 +45,22 @@ describe('UsersController', () => {
         {
           provide: UsersService,
           useValue: mockUsersService,
+        },
+        {
+          provide: CaslGuard,
+          useValue: mockCaslGuard,
+        },
+        {
+          provide: Reflector,
+          useValue: mockReflector,
+        },
+        {
+          provide: CaslAbilityFactory,
+          useValue: mockCaslAbilityFactory,
+        },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

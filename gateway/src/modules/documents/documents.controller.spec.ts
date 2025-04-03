@@ -3,6 +3,14 @@ import { DocumentsController } from './documents.controller';
 import { DocumentsService } from './documents.service';
 import { NotFoundException } from '@nestjs/common';
 import { StreamableFile } from '@nestjs/common';
+import { CaslGuard } from '@/common/guards/casl.guard';
+import { Reflector } from '@nestjs/core';
+import { CaslAbilityFactory } from '@/common/factory/casl-ability.factory';
+import { PrismaService } from '@/database/prisma.service';
+
+jest.mock('@/common/guards/casl.guard');
+jest.mock('@/common/factory/casl-ability.factory');
+jest.mock('@/database/prisma.service');
 
 describe('DocumentsController', () => {
   let controller: DocumentsController;
@@ -16,6 +24,24 @@ describe('DocumentsController', () => {
     removeDocument: jest.fn(),
   };
 
+  const mockCaslGuard = {
+    canActivate: jest.fn().mockReturnValue(true),
+  };
+
+  const mockReflector = {
+    get: jest.fn(),
+  };
+
+  const mockCaslAbilityFactory = {
+    createForUser: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    user: {
+      findUnique: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DocumentsController],
@@ -23,6 +49,22 @@ describe('DocumentsController', () => {
         {
           provide: DocumentsService,
           useValue: mockDocumentsService,
+        },
+        {
+          provide: CaslGuard,
+          useValue: mockCaslGuard,
+        },
+        {
+          provide: Reflector,
+          useValue: mockReflector,
+        },
+        {
+          provide: CaslAbilityFactory,
+          useValue: mockCaslAbilityFactory,
+        },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

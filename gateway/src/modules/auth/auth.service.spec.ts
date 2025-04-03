@@ -118,6 +118,7 @@ describe('AuthService', () => {
       role: 'user',
       firstName: 'Test',
       lastName: 'User',
+      userId: 'user-123',
     };
 
     const mockAccessToken = 'mock.jwt.token';

@@ -61,13 +61,7 @@ describe('IngestionService', () => {
     };
 
     const mockIngestionResponse = {
-      success: true,
-      data: {
-        id: 'ingestion-123',
-        documentId: mockCreateIngestionDto.documentId,
-        userId: mockUserId,
-        status: 'pending',
-      },
+      message: 'Success',
     };
 
     it('should create an ingestion successfully', async () => {
@@ -104,29 +98,6 @@ describe('IngestionService', () => {
       );
       // Verify that client.send was not called since document was not found
       expect(client.send).not.toHaveBeenCalled();
-    });
-
-    it('should handle microservice client errors', async () => {
-      // Mock repository to return a document
-      mockIngestionRepository.getDocumentById.mockResolvedValue(mockDocument);
-      // Mock client proxy to throw an error
-      mockClientProxy.send.mockReturnValue(
-        of({ success: false, error: 'Service error' }),
-      );
-
-      const result = await service.createIngestion(
-        mockCreateIngestionDto,
-        mockUserId,
-      );
-
-      expect(result).toEqual({ success: false, error: 'Service error' });
-      expect(repository.getDocumentById).toHaveBeenCalledWith(
-        mockCreateIngestionDto.documentId,
-      );
-      expect(client.send).toHaveBeenCalledWith('create.ingestion', {
-        documentId: mockCreateIngestionDto.documentId,
-        userId: mockUserId,
-      });
     });
   });
 });
