@@ -14,7 +14,7 @@ import { IngestionRepository } from './ingestion.repository';
           name: 'INGESTION_SERVICE',
           transport: Transport.TCP,
           options: {
-            host: 'microservice',
+            host: 'localhost', //'microservice',
             port: 3001,
           },
         },

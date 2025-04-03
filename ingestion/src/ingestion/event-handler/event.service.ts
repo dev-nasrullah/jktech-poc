@@ -15,7 +15,7 @@ export class EventService {
 
     await this.ingestionRepository.updateIngestionStatus(id, status);
 
-    this.logger.log(`Ingestion ${id} updated with status ${status}`);
+    this.logger.debug(`Ingestion ${id} updated with status ${status}`);
   }
 
   private sleep(ms: number) {

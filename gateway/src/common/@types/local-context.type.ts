@@ -5,4 +5,5 @@ export type LocalContext = Pick<
   'id' | 'email' | 'firstName' | 'lastName'
 > & {
   role: string;
+  userId: string;
 };

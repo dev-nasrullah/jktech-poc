@@ -9,8 +9,6 @@ export class IngestionController {
 
   @MessagePattern('create.ingestion')
   create(data: CreateIngestionDto) {
-    console.log('create.ingestion');
-
     return this.ingestionService.createIngestion(data);
   }
 

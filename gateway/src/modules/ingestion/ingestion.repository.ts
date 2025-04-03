@@ -12,4 +12,17 @@ export class IngestionRepository {
       },
     });
   }
+
+  getIngestions(id: string) {
+    return this.prisma.ingestion.findMany({
+      where: {
+        userId: id,
+      },
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+  }
 }

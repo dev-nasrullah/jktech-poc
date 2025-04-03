@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { IngestionService } from './ingestion.service';
 import { ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { CreateIngestionDto } from './dto/create-ingestion.dto';
@@ -27,6 +27,15 @@ export class IngestionController {
     description: 'create ingestion',
   })
   create(@Body() body: CreateIngestionDto, @Context() ctx: LocalContext) {
-    return this.ingestionService.createIngestion(body, ctx.id);
+    return this.ingestionService.createIngestion(body, ctx.userId);
+  }
+
+  @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'get ingestion',
+  })
+  get(@Context() ctx: LocalContext) {
+    return this.ingestionService.getIngestions(ctx.id);
   }
 }

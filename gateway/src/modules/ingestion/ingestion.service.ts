@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIngestionDto } from './dto/create-ingestion.dto';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { IngestionRepository } from './ingestion.repository';
 import { BaseService } from '@/common/service/base.service';
 import { firstValueFrom } from 'rxjs';
@@ -20,8 +20,23 @@ export class IngestionService extends BaseService {
       throw new NotFoundException('Document not found');
     }
 
-    return firstValueFrom(
-      this.client.send('create.ingestion', { documentId, userId }),
-    );
+    try {
+      await firstValueFrom(
+        this.client.send('create.ingestion', { documentId, userId }),
+      );
+    } catch (error) {
+      throw new RpcException(error.message);
+    }
+
+    return this.response();
+  }
+
+  async getIngestions(id: string) {
+    const result = await this.ingestionRepository.getIngestions(id);
+    if (!result) {
+      throw new NotFoundException('Ingestion not found');
+    }
+
+    return this.response(result);
   }
 }
